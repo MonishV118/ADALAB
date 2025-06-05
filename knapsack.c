@@ -1,49 +1,67 @@
-#include<stdio.h>
-int main()
-{
-    float weight[10],profit[10],ratio[10],TotalValue,item,capacity,amount;
-    int i,j,num;
-    printf("Enter the number of items:");
-    scanf("%d",&num);
-    for(i=0;i<num;i++)
-    {
-        printf("\n\nEnter the weight and profit for item[%d]:\n",i);
-        scanf("%f\t%f",&weight[i],&profit[i]);
-    }
-    printf("\n\nEnter Capcity of knapsack:\n");
-    scanf("%f",&capacity);
-    for(i=0;i<num;i++)
-    {
-        ratio[i]=profit[i]/weight[i];
-    }
-    for(i=0;i<num;i++)
-    {
-        for(j=0;j<num;j++)
-        {
-            if(ratio[i]<ratio[j])
-            {
-                int temp;
-                temp=ratio[i];ratio[i]=ratio[j];ratio[j]=temp;
-                temp=weight[i];weight[i]=weight[j];weight[j]=temp;
-                temp=profit[i];profit[i]=profit[j];profit[j]=temp;
-            }
+#include <stdio.h>
+
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+void knapsack(int n, int w[], int p[], int capacity) {
+    int v[20][20], i, j;
+
+    for (i = 0; i <= n; i++) {
+        for (j = 0; j <= capacity; j++) {
+            if (i == 0 || j == 0)
+                v[i][j] = 0;
+            else if (w[i] > j)
+                v[i][j] = v[i - 1][j];
+            else
+                v[i][j] = max(v[i - 1][j], p[i] + v[i - 1][j - w[i]]);
         }
     }
-    printf("\nThe Knapsack Problem Using Greedy Method:\n");
-    for(i=0;i<num;i++)
-    {
-    if(weight[i]>capacity)
-    break;
-    else
-    {
-        TotalValue=TotalValue+profit[i];
-        capacity=capacity-weight[i];
+
+    printf("\nMaximum Profit = %d\n", v[n][capacity]);
+    printf("Items included (by index): ");
+    printf("The contents of the knapsack table are:\n");
+ for (int i = 0; i <= n; i++) {
+    for (int j = 0; j <= m; j++) {
+ printf("%d ", v[i][j]);
+ }
+ printf("\n");
+ }
+
+    i = n;
+    j = capacity;
+    while (i > 0 && j > 0) {
+        if (v[i][j] != v[i - 1][j]) {
+            printf("%d ", i);
+            j = j - w[i];
+        }
+        i--;
     }
+    printf("\n");
 }
-if(i<num)
-{
-    TotalValue=TotalValue+(ratio[i]*capacity);
-    }
-    printf("The Maximum Value is:%f\n",TotalValue);
+
+int main() {
+    int n, w[20], p[20], capacity;
+
+    printf("Enter number of items: ");
+    scanf("%d", &n);
+
+    printf("Enter weights:\n");
+    for (int i = 1; i <= n; i++)
+        scanf("%d", &w[i]);
+
+    printf("Enter profits:\n");
+    for (int i = 1; i <= n; i++)
+        scanf("%d", &p[i]);
+
+    printf("Enter knapsack capacity: ");
+    scanf("%d", &capacity);
+
+    knapsack(n, w, p, capacity);
+    printf("Entered information about knapsack problem are:\n");
+ printf("ITEM\tWEIGHT\tPROFIT\n");
+ for (int i = 1; i <= n; i++)
+ printf("%d\t%d\t%d\n", i, w[i], p[i]);
+ printf("Capacity = %d\n", m);
     return 0;
 }
